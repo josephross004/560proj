@@ -1,10 +1,3 @@
-# 560proj
-
-Use POETRY to keep track of dependencies:
-
-Add a package: `poetry add <package>`
-Install all dependencies: `poetry install`
-
 # Are You Seeing What I’m Hearing? :
 ## Convolutional Neural Network Model’s Classification of Spectrogram Images
 ### Sammy Gagou, Joseph Ross, Nadine Hughes, Julia Guzzo, Aneesh Sallarm
