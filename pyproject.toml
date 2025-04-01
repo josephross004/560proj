@@ -8,6 +8,9 @@ authors = [
 readme = "README.md"
 requires-python = "^3.12"
 dependencies = [
+    "praat-parselmouth (>=0.4.5,<0.5.0)",
+    "matplotlib (>=3.10.1,<4.0.0)",
+    "scipy (>=1.15.2,<2.0.0)"
 ]
 
 
