@@ -3,58 +3,62 @@ from scipy.signal import ShortTimeFFT
 from scipy.signal.windows import gaussian
 import numpy as np
 from PIL import Image
+import parselmouth
+import matplotlib.pyplot as plt
 
-def wavread(path: str, stereo=True):
-    '''
-    reads in a wav file. 
-    input: a string to the path of the wave file.
-    output: a tuple, where the 0th item is the sample rate and the 1st item is a vector of the waveform.
-    '''
-    samplerate, data = wavfile.read(path)
+class SoundData:
+    def __init__(self, path: str, stereo=True):
+        '''
+        reads in a wav file. 
+        input: a string to the path of the wave file.
+        output: a tuple, where the 0th item is the sample rate and the 1st item is a vector of the waveform.
+        '''
+        self.samplerate, self.data = wavfile.read(path)
 
-    #NOTE: The files in the dataset are usually in stereo format (2 channels) and need to be averaged.
-    #      This is a flag you can set to bypass this. 
+        #NOTE: The files in the dataset are usually in stereo format (2 channels) and need to be averaged.
+        #      This is a flag you can set to bypass this. 
 
-    if(stereo):
-        data = (data[:,0]+data[:,1])/2
-    return samplerate, data
+        if(self.data.ndim == 2):
+            self.data = (self.data[:,0]+self.data[:,1])/2
 
-def saveAsVector(data: np.ndarray, path: str):
-    '''
-    saves a vector as a numpy array in a separate file.
-    input: data vector, output path.
-    output: none
-    '''
-    np.save(path+'.npy', data)
+        self.p_sound = parselmouth.Sound(path)
+        
 
-def normalizeMatrix(matrix: np.ndarray):
-    '''
-    converts a matrix to a normalized matrix (all values are [0,1]). 
-    input: matrix
-    output: matrix
-    '''
-    return (matrix - np.min(matrix)) / (np.max(matrix) - np.min(matrix))
+    def saveAsVector(self, path: str):
+        '''
+        saves a vector as a numpy array in a separate file.
+        input: data vector, output path.
+        output: none
+        '''
+        np.save(path+'.npy', self.data)
 
-def saveAsSpectrogram(data: np.ndarray, rate: int, path: str):
-    '''
-    saves a vector as a spectrogram image in a separate file.
-    input: data vector, sampling rate (Hz), output path.
-    output: none
-    '''
-    g_std = 12
-    print(data)
-    print(data.shape)
-    window = gaussian(20, std=g_std, sym=True)
-    mfft = rate
-    stft = ShortTimeFFT(window, hop=50, fs=rate, mfft=mfft, scale_to='psd')
-    print("fft created.")
-    Sxx = stft.spectrogram(np.transpose(data))
-    Sxx = 10 * np.log10(Sxx) #convert to dB
-    print("spectro done.")
-    matrix = (normalizeMatrix(Sxx)*255).astype(np.uint8)
-    print(f"matrix {matrix} of size {matrix.shape}")
-    image = Image.fromarray(matrix, mode="L")
-    image.save(path+".png")
+    def normalizeMatrix(self, matrix: np.ndarray):
+        '''
+        converts a matrix to a normalized one (all values are [0,1]). 
+        input: matrix
+        output: matrix
+        '''
+        matrix /= np.max(np.abs(matrix),axis=0)
+        matrix = abs(matrix-255)
+        return matrix
 
 
+    def saveAsSpectrogram(self, path: str, dynamic_range=70):
+        '''
+        saves a vector as a spectrogram image in a separate file.
+        input: data vector, sampling rate (Hz), output path.
+        output: none
+        '''
+        spectrogram = self.p_sound.to_spectrogram(window_length=0.025, maximum_frequency=11025)
+        fig = plt.figure(frameon=False)
+        X, Y = spectrogram.x_grid(), spectrogram.y_grid()
+        sg_db = 10 * np.log10(spectrogram.values)
+        plt.pcolormesh(X, Y, sg_db, vmin=sg_db.max() - dynamic_range, cmap='Greys')
+        plt.ylim([spectrogram.ymin, spectrogram.ymax])
+        plt.axis('off')
+        fig.savefig('./testout/img.png', bbox_inches='tight', pad_inches=0)
+        plt.close()
+
+
+    
 
