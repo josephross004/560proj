@@ -56,7 +56,7 @@ class SoundData:
         plt.pcolormesh(X, Y, sg_db, vmin=sg_db.max() - dynamic_range, cmap='Greys')
         plt.ylim([spectrogram.ymin, spectrogram.ymax])
         plt.axis('off')
-        fig.savefig('./testout/img.png', bbox_inches='tight', pad_inches=0)
+        fig.savefig(path+".png", bbox_inches='tight', pad_inches=0)
         plt.close()
 
 
