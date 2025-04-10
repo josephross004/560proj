@@ -33,6 +33,7 @@ import os
 import sys
 import utils
 import tqdm
+import warnings
 
 TEST = True
 
@@ -77,13 +78,9 @@ print(f"found {count-2} files, total size = {order_file_size(filesize)} ")
 if TEST:
     list = list[0:9]
 
-with open("./pdata/manifest.txt","w") as f:
-    for i in list:
-        f.write(i)
-        f.write("\n")
-print("manifest saved at ./pdata/manifest.txt")
 
 reqd_folders = [
+"./pdata",
 "./pdata/spectrograms",
 "./pdata/spectrograms/testing",
 "./pdata/spectrograms/training",
@@ -93,24 +90,41 @@ reqd_folders = [
 "./pdata/waveforms/training",
 "./pdata/waveforms/validation"]
 
+
 for r in reqd_folders:
     if not os.path.exists(r):
         os.makedirs(r)
 #TODO: spectra in utils.
+
+with open("./pdata/manifest.txt","w") as f:
+    for i in list:
+        f.write(i)
+        f.write("\n")
+print("manifest saved at ./pdata/manifest.txt")
+
+
 import random
+warnings.filterwarnings('error',category=RuntimeWarning)
 
 
-
-
-for i in tqdm.tqdm(list):
-    ttv = random.random()
-    sd = utils.SoundData(i)
-    if (ttv) < 0.1:
-        sd.saveAsSpectrogram("./pdata/spectrograms/validation/"+os.path.basename(i))
-        sd.saveAsVector("./pdata/waveforms/validation/"+os.path.basename(i))
-    elif (ttv) < 0.2:
-        sd.saveAsSpectrogram("./pdata/spectrograms/testing/"+os.path.basename(i))
-        sd.saveAsVector("./pdata/waveforms/testing/"+os.path.basename(i))
-    else:
-        sd.saveAsSpectrogram("./pdata/spectrograms/training/"+os.path.basename(i))
-        sd.saveAsVector("./pdata/waveforms/training/"+os.path.basename(i))
+with tqdm.tqdm(list) as pbar:
+    for i in pbar:
+        ttv = random.random()
+        pbar.set_description(f"sending to {int(ttv*10)}: {os.path.basename(i)}")
+        try:
+            sd = utils.SoundData(i)
+        except ValueError or RuntimeWarning:
+            import subprocess
+            if not os.path.exists("./converted"):
+                os.makedirs("./converted")
+            subprocess.call(['ffmpeg', '-i', i,'./converted/'+str(os.path.basename(i)), '-loglevel','quiet', '-y'])
+            i = "./converted/"+str(os.path.basename(i))
+        if (ttv) < 0.1:
+            sd.saveAsSpectrogram("./pdata/spectrograms/validation/"+os.path.basename(i))
+            sd.saveAsVector("./pdata/waveforms/validation/"+os.path.basename(i))
+        elif (ttv) < 0.2:
+            sd.saveAsSpectrogram("./pdata/spectrograms/testing/"+os.path.basename(i))
+            sd.saveAsVector("./pdata/waveforms/testing/"+os.path.basename(i))
+        else:
+            sd.saveAsSpectrogram("./pdata/spectrograms/training/"+os.path.basename(i))
+            sd.saveAsVector("./pdata/waveforms/training/"+os.path.basename(i))
