@@ -91,7 +91,11 @@ reqd_folders = [
 "./pdata/waveforms",
 "./pdata/waveforms/testing",
 "./pdata/waveforms/training",
-"./pdata/waveforms/validation"]
+"./pdata/spectra/validation",
+"./pdata/spectra",
+"./pdata/spectra/testing",
+"./pdata/spectra/training",
+"./pdata/spectra/validation"]
 
 for r in reqd_folders:
     if not os.path.exists(r):
@@ -108,9 +112,12 @@ for i in tqdm.tqdm(list):
     if (ttv) < 0.1:
         sd.saveAsSpectrogram("./pdata/spectrograms/validation/"+os.path.basename(i))
         sd.saveAsVector("./pdata/waveforms/validation/"+os.path.basename(i))
+        sd.saveAsSpectra("./pdata/spectra/validation/"+os.path.basename(i))
     elif (ttv) < 0.2:
         sd.saveAsSpectrogram("./pdata/spectrograms/testing/"+os.path.basename(i))
         sd.saveAsVector("./pdata/waveforms/testing/"+os.path.basename(i))
+        sd.saveAsSpectra("./pdata/spectra/validation/"+os.path.basename(i))
     else:
         sd.saveAsSpectrogram("./pdata/spectrograms/training/"+os.path.basename(i))
         sd.saveAsVector("./pdata/waveforms/training/"+os.path.basename(i))
+        sd.saveAsSpectra("./pdata/spectra/validation/"+os.path.basename(i))
