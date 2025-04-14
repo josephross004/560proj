@@ -130,8 +130,8 @@ with tqdm.tqdm(list) as pbar:
         elif (ttv) < 0.2:
             sd.saveAsSpectrogram("./pdata/spectrograms/testing/"+os.path.basename(i))
             sd.saveAsVector("./pdata/waveforms/testing/"+os.path.basename(i))
-            sd.saveAsSpectra("./pdata/spectra/validation/"+os.path.basename(i))
+            sd.saveAsSpectra("./pdata/spectra/testing/"+os.path.basename(i))
         else:
             sd.saveAsSpectrogram("./pdata/spectrograms/training/"+os.path.basename(i))
             sd.saveAsVector("./pdata/waveforms/training/"+os.path.basename(i))
-            sd.saveAsSpectra("./pdata/spectra/validation/"+os.path.basename(i))
+            sd.saveAsSpectra("./pdata/spectra/training/"+os.path.basename(i))
