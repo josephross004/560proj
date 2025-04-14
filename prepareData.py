@@ -88,7 +88,7 @@ reqd_folders = [
 "./pdata/waveforms",
 "./pdata/waveforms/testing",
 "./pdata/waveforms/training",
-"./pdata/spectra/validation",
+"./pdata/waveforms/validation",
 "./pdata/spectra",
 "./pdata/spectra/testing",
 "./pdata/spectra/training",
