@@ -53,7 +53,7 @@ class SoundData:
         input: data vector, sampling rate (Hz), output path.
         output: none
         '''
-        spectrogram = self.p_sound.to_spectrogram(window_length=0.025, maximum_frequency=11025)
+        spectrogram = self.p_sound.to_spectrogram(window_length=0.025, maximum_frequency=self.samplerate/2)
         fig = plt.figure(frameon=False)
         X, Y = spectrogram.x_grid(), spectrogram.y_grid()
         spectrogram.values[spectrogram.values == 0] = np.min(spectrogram.values[np.nonzero(spectrogram.values)])
@@ -63,6 +63,22 @@ class SoundData:
         plt.axis('off')
         fig.savefig(path+".png", bbox_inches='tight', pad_inches=0)
         plt.close()
+
+    def saveAsSpectra(self, path: str):
+        '''
+        saves a vector as a spectral matrix. 
+        input: data vector, sampling rate, output path. 
+        output: none
+        '''
+        pctls = [1,5,10,25,50,75,90,95,99]
+        out = np.ndarray((len(pctls), self.samplerate // 2))
+        spectrogram = self.p_sound.to_spectrogram(frequency_step=1.0, window_length=0.025, maximum_frequency=self.samplerate/2)
+        for i in range(spectrogram.values.shape[0]):
+            for j in range(len(pctls)):
+                out[j][i] = np.percentile(spectrogram.values[i], pctls[j])
+        np.save(path+".npy", out)
+                
+
 
 
     
