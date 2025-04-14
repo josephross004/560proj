@@ -5,7 +5,7 @@ import numpy as np
 from PIL import Image
 import parselmouth
 import matplotlib.pyplot as plt
-
+import warnings
 class SoundData:
     def __init__(self, path: str, stereo=True):
         '''
@@ -13,7 +13,11 @@ class SoundData:
         input: a string to the path of the wave file.
         output: a tuple, where the 0th item is the sample rate and the 1st item is a vector of the waveform.
         '''
-        self.samplerate, self.data = wavfile.read(path)
+
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore",category=wavfile.WavFileWarning)
+            self.samplerate, self.data = wavfile.read(path)
+            
 
         #NOTE: The files in the dataset are usually in stereo format (2 channels) and need to be averaged.
         #      This is a flag you can set to bypass this. 
@@ -52,6 +56,7 @@ class SoundData:
         spectrogram = self.p_sound.to_spectrogram(window_length=0.025, maximum_frequency=self.samplerate/2)
         fig = plt.figure(frameon=False)
         X, Y = spectrogram.x_grid(), spectrogram.y_grid()
+        spectrogram.values[spectrogram.values == 0] = np.min(spectrogram.values[np.nonzero(spectrogram.values)])
         sg_db = 10 * np.log10(spectrogram.values)
         plt.pcolormesh(X, Y, sg_db, vmin=sg_db.max() - dynamic_range, cmap='Greys')
         plt.ylim([spectrogram.ymin, spectrogram.ymax])
