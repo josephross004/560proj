@@ -124,14 +124,14 @@ with tqdm.tqdm(list) as pbar:
             subprocess.call(['ffmpeg', '-i', i,'./converted/'+str(os.path.basename(i)), '-loglevel','quiet', '-y'])
             i = "./converted/"+str(os.path.basename(i))
         if (ttv) < 0.1:
-        sd.saveAsSpectrogram("./pdata/spectrograms/validation/"+os.path.basename(i))
-        sd.saveAsVector("./pdata/waveforms/validation/"+os.path.basename(i))
-        sd.saveAsSpectra("./pdata/spectra/validation/"+os.path.basename(i))
-    elif (ttv) < 0.2:
-        sd.saveAsSpectrogram("./pdata/spectrograms/testing/"+os.path.basename(i))
-        sd.saveAsVector("./pdata/waveforms/testing/"+os.path.basename(i))
-        sd.saveAsSpectra("./pdata/spectra/validation/"+os.path.basename(i))
-    else:
-        sd.saveAsSpectrogram("./pdata/spectrograms/training/"+os.path.basename(i))
-        sd.saveAsVector("./pdata/waveforms/training/"+os.path.basename(i))
-        sd.saveAsSpectra("./pdata/spectra/validation/"+os.path.basename(i))
+            sd.saveAsSpectrogram("./pdata/spectrograms/validation/"+os.path.basename(i))
+            sd.saveAsVector("./pdata/waveforms/validation/"+os.path.basename(i))
+            sd.saveAsSpectra("./pdata/spectra/validation/"+os.path.basename(i))
+        elif (ttv) < 0.2:
+            sd.saveAsSpectrogram("./pdata/spectrograms/testing/"+os.path.basename(i))
+            sd.saveAsVector("./pdata/waveforms/testing/"+os.path.basename(i))
+            sd.saveAsSpectra("./pdata/spectra/validation/"+os.path.basename(i))
+        else:
+            sd.saveAsSpectrogram("./pdata/spectrograms/training/"+os.path.basename(i))
+            sd.saveAsVector("./pdata/waveforms/training/"+os.path.basename(i))
+            sd.saveAsSpectra("./pdata/spectra/validation/"+os.path.basename(i))
