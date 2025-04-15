@@ -87,13 +87,13 @@ transform2 = transforms.Compose([
 
 # Load datasets
 print("load: training...")
-train_dataset = CustomDataset(root_dir='./pdata/waveforms/training', transform=transform)
+train_dataset = CustomDataset(root_dir='../pdata/waveforms/training', transform=transform)
 print("done.")
 print("load: validation...")
-val_dataset = CustomDataset(root_dir='./pdata/waveforms/validation', transform=transform)
+val_dataset = CustomDataset(root_dir='../pdata/waveforms/validation', transform=transform)
 print("done.")
 print("load: testing...")
-test_dataset = CustomDataset(root_dir='./pdata/waveforms/testing', transform=transform)
+test_dataset = CustomDataset(root_dir='../pdata/waveforms/testing', transform=transform)
 print("done.")
 
 def collate_fn_pad(batch):
@@ -134,7 +134,86 @@ class Simple1DCNN(nn.Module):
         x = self.fc2(x)
         return x
 
+def validate(model, val_loader, criterion, device):
+    """
+    Validation loop.
+
+    Args:
+        model (nn.Module): Your PyTorch model.
+        val_loader (DataLoader): DataLoader for the validation set.
+        criterion (nn.Module): Loss function.
+        device (torch.device): 'cuda' or 'cpu'.
+
+    Returns:
+        float: Average validation loss.
+        float: Validation accuracy.
+    """
+    model.eval()  # Set the model to evaluation mode
+    total_loss = 0.0
+    correct = 0
+    total = 0
+
+    # Disable gradient calculation during validation
+    with torch.no_grad():
+        for data, label in val_loader:
+            data, label = data.to(device), label.to(device)
+
+            # Forward pass
+            outputs = model(data)
+            loss = criterion(outputs, label)
+            total_loss += loss.item() * data.size(0)  # Accumulate loss
+
+            # Calculate accuracy
+            _, predicted = torch.max(outputs.data, 1)
+            total += label.size(0)
+            correct += (predicted == label).sum().item()
+
+    avg_loss = total_loss / len(val_loader.dataset)
+    accuracy = 100 * correct / total
+    return avg_loss, accuracy
+
+
+def test(model, test_loader, criterion, device):
+    """
+    Testing loop.  Very similar to the validation loop.
+
+    Args:
+        model (nn.Module): Your PyTorch model.
+        test_loader (DataLoader): DataLoader for the test set.
+        criterion (nn.Module): Loss function.
+        device (torch.device): 'cuda' or 'cpu'.
+
+    Returns:
+        float: Average test loss.
+        float: Test accuracy.
+    """
+    model.eval()  # Set the model to evaluation mode
+    total_loss = 0.0
+    correct = 0
+    total = 0
+
+    # Disable gradient calculation during testing
+    with torch.no_grad():
+        for data, label in test_loader:
+            data, label = data.to(device), label.to(device)
+
+            # Forward pass
+            outputs = model(data)
+            loss = criterion(outputs, label)
+            total_loss += loss.item() * data.size(0)  # Accumulate loss
+
+            # Calculate accuracy
+            _, predicted = torch.max(outputs.data, 1)
+            total += label.size(0)
+            correct += (predicted == label).sum().item()
+
+    avg_loss = total_loss / len(test_loader.dataset)
+    accuracy = 100 * correct / total
+    return avg_loss, accuracy
+
+
 # Initialize the model, loss function, and optimizer
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model = Simple1DCNN()
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
@@ -154,29 +233,12 @@ for epoch in range(num_epochs):
 
     print(f'Epoch [{epoch+1}/{num_epochs}], Loss: {running_loss/len(train_loader)}')
 
-    # Validation loop
-    model.eval()
-    val_loss = 0.0
-    with torch.no_grad():
-        for data, labels in val_loader:
-            data = data.unsqueeze(1)  # Add channel dimension
-            outputs = model(data)
-            loss = criterion(outputs, labels)
-            val_loss += loss.item()
+    val_loss, val_acc = validate(model, val_loader, criterion, device)
+    print(
+            f"Epoch [{epoch + 1}/{num_epochs}], Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_acc:.2f}%"
+        )
 
-    print(f'Validation Loss: {val_loss/len(val_loader)}')
-
-# Testing loop
-model.eval()
-correct = 0
-total = 0
-with torch.no_grad():
-    for data, labels in test_loader:
-        data = data.unsqueeze(1)  # Add channel dimension
-        outputs = model(data)
-        _, predicted = torch.max(outputs.data, 1)
-        total += labels.size(0)
-        correct += (predicted == labels).sum().item()
-
-print(f'Test Accuracy: {100 * correct / total}%')
+    # After training, run the test loop:
+    test_loss, test_acc = test(model, test_loader, criterion, device)
+    print(f"Test Loss: {test_loss:.4f}, Test Accuracy: {test_acc:.2f}%")
 
