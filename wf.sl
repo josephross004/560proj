@@ -13,7 +13,7 @@
 #SBATCH --job-name=cnnpytorch
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=4G
+#SBATCH --mem100G
 #SBATCH --time=4:00:00
 #SBATCH --partition=volta-gpu
 #SBATCH --output=run-%j.log

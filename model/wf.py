@@ -213,7 +213,7 @@ def test(model, test_loader, criterion, device):
 
 
 # Initialize the model, loss function, and optimizer
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+device = torch.device('cpu' if torch.cuda.is_available() else 'cpu')
 model = Simple1DCNN()
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
