@@ -64,7 +64,7 @@ class To1DTensor(object):
     """Convert ndarrays in sample to Tensors and add channel dim."""
     def __call__(self, sample):
         tensor_sample = torch.from_numpy(sample).float().unsqueeze(0)
-        print(f"Shape inside To1DTensor: {tensor_sample.shape}")
+        #print(f"Shape inside To1DTensor: {tensor_sample.shape}")
         return tensor_sample
 
 class Normalize1D(object):
@@ -117,7 +117,7 @@ class Simple1DCNN(nn.Module):
         super(Simple1DCNN, self).__init__()
         self.conv1 = nn.Conv1d(1, 32, kernel_size=3, stride=1, padding=1)
         self.conv2 = nn.Conv1d(32, 64, kernel_size=3, stride=1, padding=1)
-        self.pool = nn.MaxPool1d(kernel_size=4, stride=4, padding=0)
+        self.pool = nn.MaxPool1d(kernel_size=2, stride=2, padding=0)
         self.global_avg_pool = nn.AdaptiveAvgPool1d(1) # Output size of 1
         self.fc1 = nn.Linear(64, 512)
         self.fc2 = nn.Linear(512, 10)
@@ -219,7 +219,7 @@ criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 # Training loop
-num_epochs = 10
+num_epochs = 65
 for epoch in range(num_epochs):
     model.train()
     running_loss = 0.0
