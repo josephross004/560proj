@@ -158,7 +158,7 @@ for epoch in range(num_epochs):
     model.eval()
     val_loss = 0.0
     with torch.no_grad():
-        for data, labels in val_dataset.data:
+        for data, labels in val_loader:
             data = data.unsqueeze(1)  # Add channel dimension
             outputs = model(data)
             loss = criterion(outputs, labels)
@@ -171,7 +171,7 @@ model.eval()
 correct = 0
 total = 0
 with torch.no_grad():
-    for data, labels in test_dataset.data:
+    for data, labels in test_loader:
         data = data.unsqueeze(1)  # Add channel dimension
         outputs = model(data)
         _, predicted = torch.max(outputs.data, 1)
