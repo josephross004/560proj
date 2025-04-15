@@ -82,8 +82,8 @@ class SimpleCNN(nn.Module):
 if __name__ == '__main__':
     # Define your data directories
     train_dir = './pdata/spectra/training/'
-    val_dir = './pdata/spectra/testing/'
-    test_dir = './pdata/spectra/validation/'
+    val_dir = './pdata/spectra/validation/'
+    test_dir = './pdata/spectra/testing/'
 
 
     # Determine the maximum number of columns in the training set
@@ -112,7 +112,7 @@ if __name__ == '__main__':
 
     # Define loss function and optimizer
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(model.parameters(), lr=0.001)
+    optimizer = optim.Adam(model.parameters(), lr=0.0001)
 
     # Check if CUDA is available and use GPU if it is
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
