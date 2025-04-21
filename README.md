@@ -1,4 +1,4 @@
-# Are You Seeing What I’m Hearing? :
+# Are You Seeing What I’m Hearing? 
 ## Convolutional Neural Network Model’s Classification of Spectrogram Images
 ### Sammy Gagou, Joseph Ross, Nadine Hughes, Julia Guzzo, Aneesh Sallarm
 ## Abstract
