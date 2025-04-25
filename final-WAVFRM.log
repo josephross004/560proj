@@ -1,0 +1,78 @@
+WAVEFORM 
+ ------------- 
+
+starting: dependencies imported.
+Epoch [1/65], Loss: 2.0467119009598442
+Epoch [1/65], Validation Loss: 2.1056, Validation Accuracy: 16.90%
+Test Loss: 2.2414, Test Accuracy: 13.33%
+Epoch [2/65], Loss: 1.9540774977725486
+Epoch [2/65], Validation Loss: 2.0022, Validation Accuracy: 14.08%
+Test Loss: 2.0871, Test Accuracy: 23.33%
+Epoch [3/65], Loss: 1.9069573568261189
+Epoch [3/65], Validation Loss: 2.0174, Validation Accuracy: 18.31%
+Test Loss: 2.1547, Test Accuracy: 15.56%
+Epoch [4/65], Loss: 1.9324840462726096
+Epoch [4/65], Validation Loss: 1.9869, Validation Accuracy: 30.99%
+Test Loss: 2.2281, Test Accuracy: 21.11%
+Epoch [5/65], Loss: 1.875717966452889
+Epoch [5/65], Validation Loss: 1.9773, Validation Accuracy: 19.72%
+Test Loss: 2.2422, Test Accuracy: 14.44%
+Epoch [6/65], Loss: 1.8396116235981816
+Epoch [6/65], Validation Loss: 1.9336, Validation Accuracy: 23.94%
+Test Loss: 2.2476, Test Accuracy: 14.44%
+Epoch [7/65], Loss: 1.8514334844506306
+Epoch [7/65], Validation Loss: 1.9355, Validation Accuracy: 23.94%
+Test Loss: 2.3289, Test Accuracy: 14.44%
+Epoch [8/65], Loss: 1.8344239618467248
+Epoch [8/65], Validation Loss: 1.9254, Validation Accuracy: 29.58%
+Test Loss: 2.3463, Test Accuracy: 25.56%
+Epoch [9/65], Loss: 1.8061433512231577
+Epoch [9/65], Validation Loss: 1.9406, Validation Accuracy: 26.76%
+Test Loss: 2.4027, Test Accuracy: 15.56%
+Epoch [10/65], Loss: 1.7999491847079734
+Epoch [10/65], Validation Loss: 1.9142, Validation Accuracy: 30.99%
+Test Loss: 2.4332, Test Accuracy: 18.89%
+Epoch [11/65], Loss: 1.7747317448906277
+Epoch [11/65], Validation Loss: 1.9068, Validation Accuracy: 29.58%
+Test Loss: 2.4602, Test Accuracy: 16.67%
+Epoch [12/65], Loss: 1.788609064143637
+Epoch [12/65], Validation Loss: 1.8750, Validation Accuracy: 35.21%
+Test Loss: 2.4158, Test Accuracy: 18.89%
+Epoch [13/65], Loss: 1.788627645243769
+Epoch [13/65], Validation Loss: 1.8785, Validation Accuracy: 29.58%
+Test Loss: 2.4104, Test Accuracy: 16.67%
+Epoch [14/65], Loss: 1.772355732710465
+Epoch [14/65], Validation Loss: 1.8460, Validation Accuracy: 38.03%
+Test Loss: 2.3511, Test Accuracy: 21.11%
+Epoch [15/65], Loss: 1.7368692107822583
+Epoch [15/65], Validation Loss: 1.8334, Validation Accuracy: 32.39%
+Test Loss: 2.4090, Test Accuracy: 21.11%
+Epoch [16/65], Loss: 1.7418398753456448
+Epoch [16/65], Validation Loss: 1.8260, Validation Accuracy: 35.21%
+Test Loss: 2.3684, Test Accuracy: 20.00%
+Epoch [17/65], Loss: 1.7159612593443498
+Epoch [17/65], Validation Loss: 1.8135, Validation Accuracy: 36.62%
+Test Loss: 2.4179, Test Accuracy: 24.44%
+Epoch [18/65], Loss: 1.7208260712416277
+Epoch [18/65], Validation Loss: 1.8570, Validation Accuracy: 29.58%
+Test Loss: 2.4700, Test Accuracy: 20.00%
+Epoch [19/65], Loss: 1.716323531192282
+Epoch [19/65], Validation Loss: 1.8197, Validation Accuracy: 35.21%
+Test Loss: 2.4012, Test Accuracy: 23.33%
+Epoch [20/65], Loss: 1.671195133872654
+Epoch [20/65], Validation Loss: 1.8127, Validation Accuracy: 40.85%
+predicted tensor([
+8, 8, 8, 8, 8, 8, 8, 8, 4, 4, 4, 8, 9, 8, 8, 8, 8, 8, 8, 8, 4, 4, 4, 4, 4, 9, 4, 4, 4, 4, 4, 4], device='cuda:0') where labels tensor([
+8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 1, 1, 1, 1, 1, 4, 4, 4, 4, 4, 4, 4], device='cuda:0')
+predicted tensor([
+4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 4, 4, 8, 4, 8, 4, 8, 4, 8], device='cuda:0') where labels tensor([
+4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5], device='cuda:0')
+predicted tensor([
+8, 4, 4, 4, 4, 4, 4, 4, 4, 4, 8, 9, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 4, 4],
+       device='cuda:0') where labels tensor([
+5, 2, 2, 3, 3, 3, 3, 3, 3, 3, 6, 6, 6, 6, 7, 7, 7, 7, 9, 9, 0, 0, 0, 0],
+       device='cuda:0')
+Test Accuracy: 39.77%
+
+Job  finished at Thu Apr 24 21:17:39 EDT 2025
+Total runtime:  DEPENDENCY
