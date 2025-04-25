@@ -1,0 +1,42 @@
+SPECTRA 
+ ------------- 
+
+Maximum sequence length: 4096
+Epoch 1/10, Training Loss: 2.0984, Training Accuracy: 25.18%, Validation Loss: 1.8573, Validation Accuracy: 34.09%
+Epoch 2/10, Training Loss: 1.7326, Training Accuracy: 44.78%, Validation Loss: 1.6532, Validation Accuracy: 48.86%
+Epoch 3/10, Training Loss: 1.6043, Training Accuracy: 48.50%, Validation Loss: 1.5599, Validation Accuracy: 47.73%
+Epoch 4/10, Training Loss: 1.5257, Training Accuracy: 48.64%, Validation Loss: 1.4926, Validation Accuracy: 47.73%
+Epoch 5/10, Training Loss: 1.4622, Training Accuracy: 49.21%, Validation Loss: 1.4428, Validation Accuracy: 46.59%
+Epoch 6/10, Training Loss: 1.4146, Training Accuracy: 50.50%, Validation Loss: 1.4049, Validation Accuracy: 47.73%
+Epoch 7/10, Training Loss: 1.3797, Training Accuracy: 53.65%, Validation Loss: 1.3773, Validation Accuracy: 52.27%
+Epoch 8/10, Training Loss: 1.3501, Training Accuracy: 56.22%, Validation Loss: 1.3568, Validation Accuracy: 52.27%
+Epoch 9/10, Training Loss: 1.3241, Training Accuracy: 57.94%, Validation Loss: 1.3367, Validation Accuracy: 55.68%
+Epoch 10/10, Training Loss: 1.3056, Training Accuracy: 57.94%, Validation Loss: 1.3151, Validation Accuracy: 55.68%
+predicted tensor([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 3, 2, 3,
+        3, 2, 3, 2, 2, 2, 2, 2], device='cuda:0') where labels tensor([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1,
+        1, 2, 2, 2, 2, 2, 2, 2], device='cuda:0')
+predicted tensor([2, 3, 3, 2, 3, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 3, 2, 5, 5, 3, 0, 0, 0, 3,
+        3, 3, 3, 3, 3, 3, 3, 2], device='cuda:0') where labels tensor([2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+        3, 3, 3, 3, 3, 3, 3, 3], device='cuda:0')
+predicted tensor([3, 3, 2, 5, 5, 5, 3, 2, 5, 3, 5, 5, 2, 2, 2, 7, 2, 3, 3, 5, 2, 5, 2, 2],
+       device='cuda:0') where labels tensor([3, 4, 4, 5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 9, 9, 9, 9],
+       device='cuda:0')
+Validation Accuracy: 55.68%
+predicted tensor([
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 2, 3, 3, 3, 2, 2, 2, 2, 2, 2, 3
+], device='cuda:0') where labels tensor([
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2], device='cuda:0')
+
+predicted tensor([
+5, 3, 2, 2, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 5, 3, 5, 0, 2, 3, 2, 3, 3, 3, 3, 3, 3, 3], device='cuda:0')
+where labels tensor([
+2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3], device='cuda:0')
+predicted tensor([
+3, 2, 5, 5, 5, 3, 3, 3, 5, 5, 0, 2, 5, 3, 2, 5, 2, 3, 3, 3, 0, 3, 2, 3
+],device='cuda:0') where labels tensor([
+3, 4, 4, 5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 9, 9, 9, 9
+],
+       device='cuda:0')
+Test Accuracy: 60.23%
+Job  finished at Wed Apr 23 00:42:58 EDT 2025
+Total runtime:  DEPENDENCY

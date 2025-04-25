@@ -7,11 +7,13 @@ from PIL import Image
 import os
 import re
 
+print("SPECTROGRAM \n ------------- \n")
+
 # --- Configuration ---
-DATA_DIR = './pdata/spectrograms/'  # Replace with the actual path to your images
+DATA_DIR = '../pdata/spectrograms/'  # Replace with the actual path to your images
 BATCH_SIZE = 32
 LEARNING_RATE = 0.001
-NUM_EPOCHS = 10
+NUM_EPOCHS = 100
 TRAIN_DIR = os.path.join(DATA_DIR, 'training')
 TEST_DIR = os.path.join(DATA_DIR, 'testing')
 VAL_DIR = os.path.join(DATA_DIR, 'validation')
@@ -152,11 +154,12 @@ with torch.no_grad():
         outputs = model(inputs)
         _, predicted = torch.max(outputs.data, 1)
         total += labels.size(0)
+        print("predicted",predicted,"where labels",labels)
         correct += (predicted == labels).sum().item()
 
 test_accuracy = 100 * correct / total
 print(f"Test Accuracy: {test_accuracy:.2f}%")
 
 # --- Optional: Save the Trained Model ---
-# torch.save(model.state_dict(), 'bw_image_classifier.pth')
+torch.save(model.state_dict(), 'so.pth')
 # print("Trained model saved as bw_image_classifier.pth")

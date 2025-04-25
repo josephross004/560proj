@@ -7,6 +7,8 @@ from torch.nn.utils.rnn import pad_sequence
 import os
 import numpy as np
 
+print("WAVEFORM \n ------------- \n")
+
 print("starting: dependencies imported.")
 
 LABELS = {
@@ -58,7 +60,7 @@ class CustomDataset(Dataset):
         data, label = self.data[idx]
         if self.transform:
             data = self.transform(data)
-        return data.float(), label
+        return torch.from_numpy(data).float(), label
 
 class To1DTensor(object):
     """Convert ndarrays in sample to Tensors and add channel dim."""
@@ -85,16 +87,7 @@ transform2 = transforms.Compose([
     transforms.Normalize((0.5,), (0.5,))
 ])
 
-# Load datasets
-print("load: training...")
-train_dataset = CustomDataset(root_dir='../pdata/waveforms/training', transform=transform)
-print("done.")
-print("load: validation...")
-val_dataset = CustomDataset(root_dir='../pdata/waveforms/validation', transform=transform)
-print("done.")
-print("load: testing...")
-test_dataset = CustomDataset(root_dir='../pdata/waveforms/testing', transform=transform)
-print("done.")
+
 
 def collate_fn_pad(batch):
     data = [item[0].squeeze(0) for item in batch]  # Squeeze the channel dimension
@@ -105,10 +98,6 @@ def collate_fn_pad(batch):
     label = torch.tensor(label)
     return data_padded, label
 
-# Create data loaders
-train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True, collate_fn=collate_fn_pad)
-val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False, collate_fn=collate_fn_pad)
-test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False, collate_fn=collate_fn_pad)
 
 import torch.nn as nn
 
@@ -205,40 +194,67 @@ def test(model, test_loader, criterion, device):
             # Calculate accuracy
             _, predicted = torch.max(outputs.data, 1)
             total += label.size(0)
+            print("predicted",predicted,"where labels",label)
             correct += (predicted == label).sum().item()
 
     avg_loss = total_loss / len(test_loader.dataset)
     accuracy = 100 * correct / total
     return avg_loss, accuracy
 
+if __name__ == "main":
+    # Load datasets
+    print("load: training...")
+    train_dataset = CustomDataset(root_dir='../pdata/waveforms/training', transform=transform)
+    print("done.")
+    print("load: validation...")
+    val_dataset = CustomDataset(root_dir='../pdata/waveforms/validation', transform=transform)
+    print("done.")
+    print("load: testing...")
+    test_dataset = CustomDataset(root_dir='../pdata/waveforms/testing', transform=transform)
+    print("done.")
 
-# Initialize the model, loss function, and optimizer
-device = torch.device('cpu' if torch.cuda.is_available() else 'cpu')
-model = Simple1DCNN()
-criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(), lr=0.001)
+    # Create data loaders
+    train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True, collate_fn=collate_fn_pad)
+    val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False, collate_fn=collate_fn_pad)
+    test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False, collate_fn=collate_fn_pad)
+
+
+    # Initialize the model, loss function, and optimizer
+    device = torch.device('cpu' if torch.cuda.is_available() else 'cpu')
+    model = Simple1DCNN()
+    criterion = nn.CrossEntropyLoss()
+    optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 # Training loop
-num_epochs = 65
-for epoch in range(num_epochs):
-    model.train()
-    running_loss = 0.0
-    for data, label in train_loader:
-        optimizer.zero_grad()
-        outputs = model(data)
-        loss = criterion(outputs, label)
-        loss.backward()
-        optimizer.step()
-        running_loss += loss.item()
 
-    print(f'Epoch [{epoch+1}/{num_epochs}], Loss: {running_loss/len(train_loader)}')
+    num_epochs = 200
+    for epoch in range(num_epochs):
+        model.train()
+        running_loss = 0.0
+        for data, label in train_loader:
+            optimizer.zero_grad()
+            outputs = model(data)
+            loss = criterion(outputs, label)
+            loss.backward()
+            optimizer.step()
+            running_loss += loss.item()
 
-    val_loss, val_acc = validate(model, val_loader, criterion, device)
-    print(
-            f"Epoch [{epoch + 1}/{num_epochs}], Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_acc:.2f}%"
-        )
+        print(f'Epoch [{epoch+1}/{num_epochs}], Loss: {running_loss/len(train_loader)}')
+
+        val_loss, val_acc = validate(model, val_loader, criterion, device)
+        print(
+                f"Epoch [{epoch + 1}/{num_epochs}], Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_acc:.2f}%"
+            )
+
+        if(epoch%10 == 0):
+            # After training, run the test loop:
+            test_loss, test_acc = test(model, test_loader, criterion, device)
+            print(f"epoch {epoch} Test Loss: {test_loss:.4f}, Test Accuracy: {test_acc:.2f}%")
+
+            torch.save(model.state_dict(), "wfchkpt"+str(epoch)+".pth")
 
     # After training, run the test loop:
     test_loss, test_acc = test(model, test_loader, criterion, device)
     print(f"Test Loss: {test_loss:.4f}, Test Accuracy: {test_acc:.2f}%")
 
+    torch.save(model.state_dict(), "wfchkpt"+str(epoch)+".pth")

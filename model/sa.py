@@ -6,6 +6,8 @@ import numpy as np
 import os
 from typing import List, Tuple
 
+print("SPECTRA \n ------------- \n")
+
 class ContourDataset(Dataset):
     """Dataset for the percentile contour matrices."""
     def __init__(self, data_dir: str, max_len: int):
@@ -86,10 +88,25 @@ class SimpleCNN(nn.Module):
         x = self.fc2(x)
         return x
 
-def train_model(model: nn.Module, train_loader: DataLoader, criterion: nn.Module, optimizer: optim.Optimizer, num_epochs: int, device: str):
-    model.train()
+def train_model(model: nn.Module, train_loader: DataLoader, val_loader: DataLoader, criterion: nn.Module, optimizer: optim.Optimizer, num_epochs: int, device: str):
+    """
+    Trains a PyTorch model and prints training and validation accuracy at each epoch.
+
+    Args:
+        model (nn.Module): The PyTorch model to train.
+        train_loader (DataLoader): DataLoader for the training dataset.
+        val_loader (DataLoader): DataLoader for the validation dataset.
+        criterion (nn.Module): The loss function.
+        optimizer (optim.Optimizer): The optimization algorithm.
+        num_epochs (int): The number of training epochs.
+        device (str): The device to train on ('cpu' or 'cuda').
+    """
     for epoch in range(num_epochs):
+        # Training phase
+        model.train()
         running_loss = 0.0
+        correct_train = 0
+        total_train = 0
         for inputs, labels in train_loader:
             inputs = inputs.to(device)
             labels = labels.to(device)
@@ -101,9 +118,36 @@ def train_model(model: nn.Module, train_loader: DataLoader, criterion: nn.Module
             optimizer.step()
 
             running_loss += loss.item() * inputs.size(0)
+            _, predicted = torch.max(outputs.data, 1)
+            total_train += labels.size(0)
+            correct_train += (predicted == labels).sum().item()
 
         epoch_loss = running_loss / len(train_loader.dataset)
-        print(f'Epoch {epoch+1}/{num_epochs}, Training Loss: {epoch_loss:.4f}')
+        train_accuracy = 100 * correct_train / total_train
+
+        # Validation phase
+        model.eval()
+        val_loss = 0.0
+        correct_val = 0
+        total_val = 0
+        with torch.no_grad():
+            for inputs, labels in val_loader:
+                inputs = inputs.to(device)
+                labels = labels.to(device)
+                outputs = model(inputs)
+                loss = criterion(outputs, labels)
+                val_loss += loss.item() * inputs.size(0)
+                _, predicted = torch.max(outputs.data, 1)
+                total_val += labels.size(0)
+                correct_val += (predicted == labels).sum().item()
+
+        epoch_val_loss = val_loss / len(val_loader.dataset)
+        val_accuracy = 100 * correct_val / total_val
+
+        print(f'Epoch {epoch+1}/{num_epochs}, '
+              f'Training Loss: {epoch_loss:.4f}, Training Accuracy: {train_accuracy:.2f}%, '
+              f'Validation Loss: {epoch_val_loss:.4f}, Validation Accuracy: {val_accuracy:.2f}%')
+
 
 def evaluate_model(model: nn.Module, data_loader: DataLoader, device: str) -> Tuple[float, float]:
     model.eval()
@@ -115,6 +159,7 @@ def evaluate_model(model: nn.Module, data_loader: DataLoader, device: str) -> Tu
             labels = labels.to(device)
             outputs = model(inputs)
             _, predicted = torch.max(outputs.data, 1)
+            print("predicted",predicted,"where labels",labels)
             total += labels.size(0)
             correct += (predicted == labels).sum().item()
     accuracy = 100 * correct / total
@@ -122,9 +167,9 @@ def evaluate_model(model: nn.Module, data_loader: DataLoader, device: str) -> Tu
 
 if __name__ == '__main__':
     # Define your data directories
-    train_data_dir = './pdata/spectra/training'
-    val_data_dir = './pdata/spectra/validation'
-    test_data_dir = './pdata/spectra/testing'
+    train_data_dir = '../pdata/spectra/training'
+    val_data_dir = '../pdata/spectra/validation'
+    test_data_dir = '../pdata/spectra/testing'
 
     # Ensure the directories exist (replace with your actual paths)
     os.makedirs(train_data_dir, exist_ok=True)
@@ -168,7 +213,7 @@ if __name__ == '__main__':
 
     # Train the model
     num_epochs = 10
-    train_model(model, train_loader, criterion, optimizer, num_epochs, device)
+    train_model(model, train_loader, val_loader, criterion, optimizer, num_epochs, device)
 
     # Evaluate on the validation set
     val_accuracy = evaluate_model(model, val_loader, device)
@@ -177,3 +222,4 @@ if __name__ == '__main__':
     # Evaluate on the test set
     test_accuracy = evaluate_model(model, test_loader, device)
     print(f'Test Accuracy: {test_accuracy:.2f}%')
+    torch.save(model.state_dict(), "sa.pth")

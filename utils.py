@@ -71,11 +71,16 @@ class SoundData:
         output: none
         '''
         pctls = [1,5,10,25,50,75,90,95,99]
-        out = np.ndarray((len(pctls), self.samplerate // 2))
-        spectrogram = self.p_sound.to_spectrogram(frequency_step=1.0, window_length=0.025, maximum_frequency=self.samplerate/2)
+        spectrogram = self.p_sound.to_spectrogram(frequency_step=10.0, window_length=0.025, maximum_frequency=self.samplerate/2)
+        out = np.zeros((len(pctls), (spectrogram.values.shape[0])))
+        spectrogram.values[spectrogram.values == 0] = np.min(spectrogram.values[np.nonzero(spectrogram.values)])
+        sg_db = (10 * np.log10(spectrogram.values))
+        sgn_db = sg_db + 35
         for i in range(spectrogram.values.shape[0]):
             for j in range(len(pctls)):
-                out[j][i] = np.percentile(spectrogram.values[i], pctls[j])
+                out[j][i] = np.percentile(sgn_db[i], pctls[j])
+        idx = np.argwhere(np.all(out[..., :] == 0, axis=0))
+        out = np.delete(out,idx,axis=1)
         np.save(path+".npy", out)
                 
 

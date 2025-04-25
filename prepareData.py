@@ -112,9 +112,11 @@ warnings.filterwarnings('error',category=RuntimeWarning)
 
 
 with tqdm.tqdm(list) as pbar:
+    a = [0,1,2,3,4,5,6,7,8,9]
     for i in pbar:
-        ttv = random.random()
-        pbar.set_description(f"sending to {int(ttv*10)}: {os.path.basename(i)}")
+        ttv = random.choice(a)
+        a.remove(ttv)
+        pbar.set_description(f"sending to {int(ttv)}: {os.path.basename(i)}")
         try:
             sd = utils.SoundData(i)
         except ValueError or RuntimeWarning:
@@ -123,11 +125,11 @@ with tqdm.tqdm(list) as pbar:
                 os.makedirs("./converted")
             subprocess.call(['ffmpeg', '-i', i,'./converted/'+str(os.path.basename(i)), '-loglevel','quiet', '-y'])
             i = "./converted/"+str(os.path.basename(i))
-        if (ttv) < 0.1:
+        if (ttv) < 1:
             sd.saveAsSpectrogram("./pdata/spectrograms/validation/"+os.path.basename(i))
             sd.saveAsVector("./pdata/waveforms/validation/"+os.path.basename(i))
             sd.saveAsSpectra("./pdata/spectra/validation/"+os.path.basename(i))
-        elif (ttv) < 0.2:
+        elif (ttv) < 2:
             sd.saveAsSpectrogram("./pdata/spectrograms/testing/"+os.path.basename(i))
             sd.saveAsVector("./pdata/waveforms/testing/"+os.path.basename(i))
             sd.saveAsSpectra("./pdata/spectra/testing/"+os.path.basename(i))
@@ -135,3 +137,5 @@ with tqdm.tqdm(list) as pbar:
             sd.saveAsSpectrogram("./pdata/spectrograms/training/"+os.path.basename(i))
             sd.saveAsVector("./pdata/waveforms/training/"+os.path.basename(i))
             sd.saveAsSpectra("./pdata/spectra/training/"+os.path.basename(i))
+        if len(a)==0:
+            a = [0,1,2,3,4,5,6,7,8,9]
